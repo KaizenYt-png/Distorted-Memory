@@ -44,10 +44,6 @@ public class PlayerController : MonoBehaviour
     public int levelIndexWin = 0;
 
 
-
-
-
-
     public Transform orientation;
 
     float horizontalInput;

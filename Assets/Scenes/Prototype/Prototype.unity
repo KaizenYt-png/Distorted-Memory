@@ -243,6 +243,18 @@ PrefabInstance:
       propertyPath: cameraPosition
       value: 
       objectReference: {fileID: 1411726994}
+    - target: {fileID: 4653691176391668684, guid: e70077ae31e681d4f9d54fd025e179aa, type: 3}
+      propertyPath: sensX
+      value: 200
+      objectReference: {fileID: 0}
+    - target: {fileID: 4653691176391668684, guid: e70077ae31e681d4f9d54fd025e179aa, type: 3}
+      propertyPath: sensY
+      value: 200
+      objectReference: {fileID: 0}
+    - target: {fileID: 4653691176391668684, guid: e70077ae31e681d4f9d54fd025e179aa, type: 3}
+      propertyPath: orientation
+      value: 
+      objectReference: {fileID: 1411726993}
     - target: {fileID: 5633123578593996595, guid: e70077ae31e681d4f9d54fd025e179aa, type: 3}
       propertyPath: m_Name
       value: Camera Holder
@@ -253,7 +265,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8146362572112014620, guid: e70077ae31e681d4f9d54fd025e179aa, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.131
+      value: 1.465
       objectReference: {fileID: 0}
     - target: {fileID: 8146362572112014620, guid: e70077ae31e681d4f9d54fd025e179aa, type: 3}
       propertyPath: m_LocalPosition.z
@@ -287,37 +299,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 4653691176391668684, guid: e70077ae31e681d4f9d54fd025e179aa, type: 3}
+    m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 9047034727823342150, guid: e70077ae31e681d4f9d54fd025e179aa, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 203724572}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e70077ae31e681d4f9d54fd025e179aa, type: 3}
---- !u!1 &203724571 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 9047034727823342150, guid: e70077ae31e681d4f9d54fd025e179aa, type: 3}
-  m_PrefabInstance: {fileID: 203724570}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &203724572
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 203724571}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aa1979f0bb2cc844d98baf2b5510230b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::CameraController
-  sensX: 200
-  sensY: 200
-  orientation: {fileID: 1411726993}
-  xRotation: 0
-  yRotation: 0
 --- !u!1 &702706777
 GameObject:
   m_ObjectHideFlags: 0
@@ -330,9 +316,9 @@ GameObject:
   - component: {fileID: 702706780}
   - component: {fileID: 702706779}
   - component: {fileID: 702706778}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Ground
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -572,7 +558,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 684933752399450269, guid: 4f788c6c290101a48bd2481c82d8858d, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.13899994
+      value: 0.19500005
       objectReference: {fileID: 0}
     - target: {fileID: 684933752399450269, guid: 4f788c6c290101a48bd2481c82d8858d, type: 3}
       propertyPath: m_LocalPosition.z
@@ -606,6 +592,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3181616921949935514, guid: 4f788c6c290101a48bd2481c82d8858d, type: 3}
+      propertyPath: m_Mass
+      value: 70
+      objectReference: {fileID: 0}
     - target: {fileID: 3396034185275449287, guid: 4f788c6c290101a48bd2481c82d8858d, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
@@ -618,7 +608,8 @@ PrefabInstance:
       propertyPath: whatIsGround.m_Bits
       value: 64
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 5654028458268698434, guid: 4f788c6c290101a48bd2481c82d8858d, type: 3}
     m_RemovedGameObjects:
     - {fileID: 1527392866764314110, guid: 4f788c6c290101a48bd2481c82d8858d, type: 3}
     m_AddedGameObjects: []
