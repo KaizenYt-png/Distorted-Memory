@@ -39,14 +39,6 @@ public class PlayerController : MonoBehaviour
     private RaycastHit slopeHit;
     private bool exitingSlope;
 
-    [Header("Power Manager")]
-    public bool hasShieldPowerUp;
-    public bool hasSpeedPowerUp;
-    public GameObject shield;
-
-    [Header("Player State")]
-    public bool isPlayerDead = false;
-    public bool playerWin = false;
 
     [Header("Level Info")]
     public int levelIndexWin = 0;
@@ -95,11 +87,6 @@ public class PlayerController : MonoBehaviour
         StateHandler();
 
 
-        // look if player die
-        if (gameObject.activeSelf == false)
-        {
-            isPlayerDead = true;
-        }
 
         // handle drag
         if (grounded)
@@ -253,37 +240,8 @@ public class PlayerController : MonoBehaviour
         return Vector3.ProjectOnPlane(moveDirection, slopeHit.normal).normalized;
     }
 
+
     
-
-   
-
-
-
-    private void OnCollisionEnter(Collision collision)
-    {
-        
-        
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("ShieldPowerUp"))
-        {
-            hasShieldPowerUp = true;
-            
-            shield.SetActive(true);
-            Destroy(other.gameObject);
-        }
-        else if (other.CompareTag("SpeedPowerUp"))
-        {
-            hasSpeedPowerUp = true;
-            Destroy(other.gameObject);
-        }
-        else if (other.CompareTag("Win"))
-        {
-            SceneManagement.LoadSceneByIndex(levelIndexWin);
-        }
-    }
 
     
 }
