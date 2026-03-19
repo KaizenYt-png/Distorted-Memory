@@ -1659,6 +1659,10 @@ PrefabInstance:
       value: Player
       objectReference: {fileID: 0}
     - target: {fileID: 6821701764687435889, guid: 4f788c6c290101a48bd2481c82d8858d, type: 3}
+      propertyPath: playerParameters
+      value: 
+      objectReference: {fileID: 11400000, guid: da31506c1d870e64bbdf3928b39bbe7f, type: 2}
+    - target: {fileID: 6821701764687435889, guid: 4f788c6c290101a48bd2481c82d8858d, type: 3}
       propertyPath: whatIsGround.m_Bits
       value: 4294967295
       objectReference: {fileID: 0}

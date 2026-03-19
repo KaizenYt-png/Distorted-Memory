@@ -5,44 +5,20 @@ using TMPro;
 
 public class PlayerController : MonoBehaviour
 {
-    [Header("Movement")]
-    private float moveSpeed;
-    public float walkSpeed;
-    public float sprintSpeed;
+    [SerializeField] private PlayerStat playerParameters;
 
-    public float groundDrag;
-
-    [Header("Jumping")]
-    public float jumpForce;
-    public float jumpCooldown;
-    public float airMultiplier;
+    //Jumping
     bool readyToJump;
-    
 
-    [Header("Crouching")]
-    public float crouchSpeed;
-    public float crouchYScale;
+    //Crouching
     private float startYScale;
 
-    [Header("Keybinds")]
-    public KeyCode jumpKey = KeyCode.Space;
-    public KeyCode sprintKey = KeyCode.LeftShift;
-    public KeyCode crouchKey = KeyCode.LeftControl;
-
-    [Header("Ground Check")]
-    public float playerHeight;
-    public LayerMask whatIsGround;
+    //Ground Check
     bool grounded;
 
-    [Header("Slope Handling")]
-    public float maxSlopeAngle;
+    //Slope Handling
     private RaycastHit slopeHit;
     private bool exitingSlope;
-
-
-    [Header("Level Info")]
-    public int levelIndexWin = 0;
-
 
     public Transform orientation;
 
@@ -76,7 +52,7 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
         // ground check
-        grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.2f, whatIsGround);
+        grounded = Physics.Raycast(transform.position, Vector3.down, playerParameters.playerHeight * 0.5f + 0.2f, playerParameters.whatIsGround);
 
         MyInput();
         SpeedControl();
@@ -86,7 +62,7 @@ public class PlayerController : MonoBehaviour
 
         // handle drag
         if (grounded)
-            rb.linearDamping = groundDrag;
+            rb.linearDamping = playerParameters.groundDrag;
         else
             rb.linearDamping = 0;
     }
@@ -102,24 +78,24 @@ public class PlayerController : MonoBehaviour
         verticalInput = Input.GetAxisRaw("Vertical");
 
         // when to jump
-        if (Input.GetKey(jumpKey) && readyToJump && grounded)
+        if (Input.GetKey(playerParameters.jumpKey) && readyToJump && grounded)
         {
             readyToJump = false;
 
             Jump();
 
-            Invoke(nameof(ResetJump), jumpCooldown);
+            Invoke(nameof(ResetJump), playerParameters.jumpCooldown);
         }
 
         // start crouch
-        if (Input.GetKeyDown(crouchKey))
+        if (Input.GetKeyDown(playerParameters.crouchKey))
         {
-            transform.localScale = new Vector3(transform.localScale.x, crouchYScale, transform.localScale.z);
+            transform.localScale = new Vector3(transform.localScale.x, playerParameters.crouchYScale, transform.localScale.z);
             rb.AddForce(Vector3.down * 5f, ForceMode.Impulse);
         }
 
         // stop crouch
-        if (Input.GetKeyUp(crouchKey))
+        if (Input.GetKeyUp(playerParameters.crouchKey))
         {
             transform.localScale = new Vector3(transform.localScale.x, startYScale, transform.localScale.z);
         }
@@ -128,24 +104,24 @@ public class PlayerController : MonoBehaviour
     private void StateHandler()
     {
         // Mode - Crouching
-        if (Input.GetKey(crouchKey))
+        if (Input.GetKey(playerParameters.crouchKey))
         {
             state = MovementState.crouching;
-            moveSpeed = crouchSpeed;
+            playerParameters.moveSpeed = playerParameters.crouchSpeed;
         }
 
         // Mode - Sprinting
-        else if (grounded && Input.GetKey(sprintKey))
+        else if (grounded && Input.GetKey(playerParameters.sprintKey))
         {
             state = MovementState.sprinting;
-            moveSpeed = sprintSpeed;
+            playerParameters.moveSpeed = playerParameters.sprintSpeed;
         }
 
         // Mode - Walking
         else if (grounded)
         {
             state = MovementState.walking;
-            moveSpeed = walkSpeed;
+            playerParameters.moveSpeed = playerParameters.walkSpeed;
         }
 
         // Mode - Air
@@ -163,7 +139,7 @@ public class PlayerController : MonoBehaviour
         // on slope
         if (OnSlope() && !exitingSlope)
         {
-            rb.AddForce(GetSlopeMoveDirection() * moveSpeed * 20f, ForceMode.Force);
+            rb.AddForce(GetSlopeMoveDirection() * playerParameters.moveSpeed * 20f, ForceMode.Force);
 
             if (rb.linearVelocity.y > 0)
                 rb.AddForce(Vector3.down * 80f, ForceMode.Force);
@@ -171,11 +147,11 @@ public class PlayerController : MonoBehaviour
 
         // on ground
         else if (grounded)
-            rb.AddForce(moveDirection.normalized * moveSpeed * 10f, ForceMode.Force);
+            rb.AddForce(moveDirection.normalized * playerParameters.moveSpeed * 10f, ForceMode.Force);
 
         // in air
         else if (!grounded)
-            rb.AddForce(moveDirection.normalized * moveSpeed * 10f * airMultiplier, ForceMode.Force);
+            rb.AddForce(moveDirection.normalized * playerParameters.moveSpeed * 10f * playerParameters.airMultiplier, ForceMode.Force);
 
         // turn gravity off while on slope
         rb.useGravity = !OnSlope();
@@ -186,8 +162,8 @@ public class PlayerController : MonoBehaviour
         // limiting speed on slope
         if (OnSlope() && !exitingSlope)
         {
-            if (rb.linearVelocity.magnitude > moveSpeed)
-                rb.linearVelocity = rb.linearVelocity.normalized * moveSpeed;
+            if (rb.linearVelocity.magnitude > playerParameters.moveSpeed)
+                rb.linearVelocity = rb.linearVelocity.normalized * playerParameters.moveSpeed;
         }
 
         // limiting speed on ground or in air
@@ -196,9 +172,9 @@ public class PlayerController : MonoBehaviour
             Vector3 flatVel = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
 
             // limit velocity if needed
-            if (flatVel.magnitude > moveSpeed)
+            if (flatVel.magnitude > playerParameters.moveSpeed)
             {
-                Vector3 limitedVel = flatVel.normalized * moveSpeed;
+                Vector3 limitedVel = flatVel.normalized * playerParameters.moveSpeed;
                 rb.linearVelocity = new Vector3(limitedVel.x, rb.linearVelocity.y, limitedVel.z);
             }
         }
@@ -211,7 +187,7 @@ public class PlayerController : MonoBehaviour
         // reset y velocity
         rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
 
-        rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
+        rb.AddForce(transform.up * playerParameters.jumpForce, ForceMode.Impulse);
     }
     private void ResetJump()
     {
@@ -222,10 +198,10 @@ public class PlayerController : MonoBehaviour
 
     private bool OnSlope()
     {
-        if (Physics.Raycast(transform.position, Vector3.down, out slopeHit, playerHeight * 0.5f + 0.3f))
+        if (Physics.Raycast(transform.position, Vector3.down, out slopeHit, playerParameters.playerHeight * 0.5f + 0.3f))
         {
             float angle = Vector3.Angle(Vector3.up, slopeHit.normal);
-            return angle < maxSlopeAngle && angle != 0;
+            return angle < playerParameters.maxSlopeAngle && angle != 0;
         }
 
         return false;
