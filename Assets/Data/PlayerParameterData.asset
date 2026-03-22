@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 86ee844e3f1b7b547883be6d4a1c13db, type: 3}
-  m_Name: Player Parameter
+  m_Name: PlayerParameterData
   m_EditorClassIdentifier: Assembly-CSharp::PlayerStat
   moveSpeed: 7
   walkSpeed: 7
