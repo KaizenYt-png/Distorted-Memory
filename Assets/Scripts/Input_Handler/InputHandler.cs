@@ -2,10 +2,11 @@ using UnityEngine;
 
 public class InputHandler : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    
+    public InteractionInputData interactionInputData;
     void Start()
     {
-        
+        interactionInputData.Reset();
     }
 
     // Update is called once per frame
