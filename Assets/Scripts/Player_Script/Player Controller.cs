@@ -21,12 +21,12 @@ public class PlayerController : MonoBehaviour
 
     public Transform orientation;
 
-    float _horizontalInput;
-    float _verticalInput;
+    private float _horizontalInput;
+    private float _verticalInput;
 
-    Vector3 _moveDirection;
+    private Vector3 _moveDirection;
 
-    Rigidbody _rb;
+    private Rigidbody _rb;
 
     public MovementState state;
     public enum MovementState
@@ -109,24 +109,22 @@ public class PlayerController : MonoBehaviour
             playerParameters.moveSpeed = playerParameters.crouchSpeed;
         }
 
-        // Mode - Sprinting
-        else if (_grounded && Input.GetKey(playerParameters.sprintKey))
+        else switch (_grounded)
         {
-            state = MovementState.Sprinting;
-            playerParameters.moveSpeed = playerParameters.sprintSpeed;
-        }
-
-        // Mode - Walking
-        else if (_grounded)
-        {
-            state = MovementState.Walking;
-            playerParameters.moveSpeed = playerParameters.walkSpeed;
-        }
-
-        // Mode - Air
-        else
-        {
-            state = MovementState.Air;
+            // Mode - Sprinting
+            case true when Input.GetKey(playerParameters.sprintKey):
+                state = MovementState.Sprinting;
+                playerParameters.moveSpeed = playerParameters.sprintSpeed;
+                break;
+            // Mode - Walking
+            case true:
+                state = MovementState.Walking;
+                playerParameters.moveSpeed = playerParameters.walkSpeed;
+                break;
+            // Mode - Air
+            default:
+                state = MovementState.Air;
+                break;
         }
     }
 
@@ -138,19 +136,23 @@ public class PlayerController : MonoBehaviour
         // on slope
         if (OnSlope() && !_exitingSlope)
         {
-            _rb.AddForce(GetSlopeMoveDirection() * playerParameters.moveSpeed * 20f, ForceMode.Force);
+            _rb.AddForce(GetSlopeMoveDirection() * (playerParameters.moveSpeed * 20f), ForceMode.Force);
 
             if (_rb.linearVelocity.y > 0)
                 _rb.AddForce(Vector3.down * 80f, ForceMode.Force);
         }
 
-        // on ground
-        else if (_grounded)
-            _rb.AddForce(_moveDirection.normalized * playerParameters.moveSpeed * 10f, ForceMode.Force);
-
-        // in air
-        else if (!_grounded)
-            _rb.AddForce(_moveDirection.normalized * playerParameters.moveSpeed * 10f * playerParameters.airMultiplier, ForceMode.Force);
+        else switch (_grounded)
+        {
+            // on ground
+            case true:
+                _rb.AddForce(_moveDirection.normalized * (playerParameters.moveSpeed * 10f), ForceMode.Force);
+                break;
+            // in air
+            case false:
+                _rb.AddForce(_moveDirection.normalized * (playerParameters.moveSpeed * 10f * playerParameters.airMultiplier), ForceMode.Force);
+                break;
+        }
 
         // turn gravity off while on slope
         _rb.useGravity = !OnSlope();
@@ -168,14 +170,12 @@ public class PlayerController : MonoBehaviour
         // limiting speed on ground or in air
         else
         {
-            Vector3 flatVel = new Vector3(_rb.linearVelocity.x, 0f, _rb.linearVelocity.z);
+            var flatVel = new Vector3(_rb.linearVelocity.x, 0f, _rb.linearVelocity.z);
 
             // limit velocity if needed
-            if (flatVel.magnitude > playerParameters.moveSpeed)
-            {
-                Vector3 limitedVel = flatVel.normalized * playerParameters.moveSpeed;
-                _rb.linearVelocity = new Vector3(limitedVel.x, _rb.linearVelocity.y, limitedVel.z);
-            }
+            if (!(flatVel.magnitude > playerParameters.moveSpeed)) return;
+            var limitedVel = flatVel.normalized * playerParameters.moveSpeed;
+            _rb.linearVelocity = new Vector3(limitedVel.x, _rb.linearVelocity.y, limitedVel.z);
         }
     }
 
@@ -197,13 +197,11 @@ public class PlayerController : MonoBehaviour
 
     private bool OnSlope()
     {
-        if (Physics.Raycast(transform.position, Vector3.down, out _slopeHit, playerParameters.playerHeight * 0.5f + 0.3f))
-        {
-            float angle = Vector3.Angle(Vector3.up, _slopeHit.normal);
-            return angle < playerParameters.maxSlopeAngle && angle != 0;
-        }
+        if (!Physics.Raycast(transform.position, Vector3.down, out _slopeHit,
+                playerParameters.playerHeight * 0.5f + 0.3f)) return false;
+        var angle = Vector3.Angle(Vector3.up, _slopeHit.normal);
+        return angle < playerParameters.maxSlopeAngle && angle != 0;
 
-        return false;
     }
 
     private Vector3 GetSlopeMoveDirection()
