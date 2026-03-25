@@ -1,58 +1,57 @@
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.EventSystems;
-using TMPro;
+
+
 
 public class PlayerController : MonoBehaviour
 {
     [SerializeField] private PlayerStat playerParameters;
 
     //Jumping
-    bool readyToJump;
+    bool _readyToJump;
 
     //Crouching
-    private float startYScale;
+    private float _startYScale;
 
     //Ground Check
-    bool grounded;
+    bool _grounded;
 
     //Slope Handling
-    private RaycastHit slopeHit;
-    private bool exitingSlope;
+    private RaycastHit _slopeHit;
+    private bool _exitingSlope;
 
     public Transform orientation;
 
-    float horizontalInput;
-    float verticalInput;
+    float _horizontalInput;
+    float _verticalInput;
 
-    Vector3 moveDirection;
+    Vector3 _moveDirection;
 
-    Rigidbody rb;
+    Rigidbody _rb;
 
     public MovementState state;
     public enum MovementState
     {
-        walking,
-        sprinting,
-        crouching,
-        air
+        Walking,
+        Sprinting,
+        Crouching,
+        Air
     }
 
     private void Start()
     {
         
-        rb = GetComponent<Rigidbody>();
-        rb.freezeRotation = true;
+        _rb = GetComponent<Rigidbody>();
+        _rb.freezeRotation = true;
 
-        readyToJump = true;
+        _readyToJump = true;
 
-        startYScale = transform.localScale.y;
+        _startYScale = transform.localScale.y;
     }
 
     private void Update()
     {
         // ground check
-        grounded = Physics.Raycast(transform.position, Vector3.down, playerParameters.playerHeight * 0.5f + 0.2f, playerParameters.whatIsGround);
+        _grounded = Physics.Raycast(transform.position, Vector3.down, playerParameters.playerHeight * 0.5f + 0.2f, playerParameters.whatIsGround);
 
         MyInput();
         SpeedControl();
@@ -61,10 +60,10 @@ public class PlayerController : MonoBehaviour
 
 
         // handle drag
-        if (grounded)
-            rb.linearDamping = playerParameters.groundDrag;
+        if (_grounded)
+            _rb.linearDamping = playerParameters.groundDrag;
         else
-            rb.linearDamping = 0;
+            _rb.linearDamping = 0;
     }
 
     private void FixedUpdate()
@@ -74,13 +73,13 @@ public class PlayerController : MonoBehaviour
 
     private void MyInput()
     {
-        horizontalInput = Input.GetAxisRaw("Horizontal");
-        verticalInput = Input.GetAxisRaw("Vertical");
+        _horizontalInput = Input.GetAxisRaw("Horizontal");
+        _verticalInput = Input.GetAxisRaw("Vertical");
 
         // when to jump
-        if (Input.GetKey(playerParameters.jumpKey) && readyToJump && grounded)
+        if (Input.GetKey(playerParameters.jumpKey) && _readyToJump && _grounded)
         {
-            readyToJump = false;
+            _readyToJump = false;
 
             Jump();
 
@@ -91,13 +90,13 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKeyDown(playerParameters.crouchKey))
         {
             transform.localScale = new Vector3(transform.localScale.x, playerParameters.crouchYScale, transform.localScale.z);
-            rb.AddForce(Vector3.down * 5f, ForceMode.Impulse);
+            _rb.AddForce(Vector3.down * 5f, ForceMode.Impulse);
         }
 
         // stop crouch
         if (Input.GetKeyUp(playerParameters.crouchKey))
         {
-            transform.localScale = new Vector3(transform.localScale.x, startYScale, transform.localScale.z);
+            transform.localScale = new Vector3(transform.localScale.x, _startYScale, transform.localScale.z);
         }
     }
 
@@ -106,101 +105,101 @@ public class PlayerController : MonoBehaviour
         // Mode - Crouching
         if (Input.GetKey(playerParameters.crouchKey))
         {
-            state = MovementState.crouching;
+            state = MovementState.Crouching;
             playerParameters.moveSpeed = playerParameters.crouchSpeed;
         }
 
         // Mode - Sprinting
-        else if (grounded && Input.GetKey(playerParameters.sprintKey))
+        else if (_grounded && Input.GetKey(playerParameters.sprintKey))
         {
-            state = MovementState.sprinting;
+            state = MovementState.Sprinting;
             playerParameters.moveSpeed = playerParameters.sprintSpeed;
         }
 
         // Mode - Walking
-        else if (grounded)
+        else if (_grounded)
         {
-            state = MovementState.walking;
+            state = MovementState.Walking;
             playerParameters.moveSpeed = playerParameters.walkSpeed;
         }
 
         // Mode - Air
         else
         {
-            state = MovementState.air;
+            state = MovementState.Air;
         }
     }
 
     private void MovePlayer()
     {
         // calculate movement direction
-        moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
+        _moveDirection = orientation.forward * _verticalInput + orientation.right * _horizontalInput;
 
         // on slope
-        if (OnSlope() && !exitingSlope)
+        if (OnSlope() && !_exitingSlope)
         {
-            rb.AddForce(GetSlopeMoveDirection() * playerParameters.moveSpeed * 20f, ForceMode.Force);
+            _rb.AddForce(GetSlopeMoveDirection() * playerParameters.moveSpeed * 20f, ForceMode.Force);
 
-            if (rb.linearVelocity.y > 0)
-                rb.AddForce(Vector3.down * 80f, ForceMode.Force);
+            if (_rb.linearVelocity.y > 0)
+                _rb.AddForce(Vector3.down * 80f, ForceMode.Force);
         }
 
         // on ground
-        else if (grounded)
-            rb.AddForce(moveDirection.normalized * playerParameters.moveSpeed * 10f, ForceMode.Force);
+        else if (_grounded)
+            _rb.AddForce(_moveDirection.normalized * playerParameters.moveSpeed * 10f, ForceMode.Force);
 
         // in air
-        else if (!grounded)
-            rb.AddForce(moveDirection.normalized * playerParameters.moveSpeed * 10f * playerParameters.airMultiplier, ForceMode.Force);
+        else if (!_grounded)
+            _rb.AddForce(_moveDirection.normalized * playerParameters.moveSpeed * 10f * playerParameters.airMultiplier, ForceMode.Force);
 
         // turn gravity off while on slope
-        rb.useGravity = !OnSlope();
+        _rb.useGravity = !OnSlope();
     }
 
     private void SpeedControl()
     {
         // limiting speed on slope
-        if (OnSlope() && !exitingSlope)
+        if (OnSlope() && !_exitingSlope)
         {
-            if (rb.linearVelocity.magnitude > playerParameters.moveSpeed)
-                rb.linearVelocity = rb.linearVelocity.normalized * playerParameters.moveSpeed;
+            if (_rb.linearVelocity.magnitude > playerParameters.moveSpeed)
+                _rb.linearVelocity = _rb.linearVelocity.normalized * playerParameters.moveSpeed;
         }
 
         // limiting speed on ground or in air
         else
         {
-            Vector3 flatVel = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
+            Vector3 flatVel = new Vector3(_rb.linearVelocity.x, 0f, _rb.linearVelocity.z);
 
             // limit velocity if needed
             if (flatVel.magnitude > playerParameters.moveSpeed)
             {
                 Vector3 limitedVel = flatVel.normalized * playerParameters.moveSpeed;
-                rb.linearVelocity = new Vector3(limitedVel.x, rb.linearVelocity.y, limitedVel.z);
+                _rb.linearVelocity = new Vector3(limitedVel.x, _rb.linearVelocity.y, limitedVel.z);
             }
         }
     }
 
     private void Jump()
     {
-        exitingSlope = true;
+        _exitingSlope = true;
 
         // reset y velocity
-        rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
+        _rb.linearVelocity = new Vector3(_rb.linearVelocity.x, 0f, _rb.linearVelocity.z);
 
-        rb.AddForce(transform.up * playerParameters.jumpForce, ForceMode.Impulse);
+        _rb.AddForce(transform.up * playerParameters.jumpForce, ForceMode.Impulse);
     }
     private void ResetJump()
     {
-        readyToJump = true;
+        _readyToJump = true;
 
-        exitingSlope = false;
+        _exitingSlope = false;
     }
 
     private bool OnSlope()
     {
-        if (Physics.Raycast(transform.position, Vector3.down, out slopeHit, playerParameters.playerHeight * 0.5f + 0.3f))
+        if (Physics.Raycast(transform.position, Vector3.down, out _slopeHit, playerParameters.playerHeight * 0.5f + 0.3f))
         {
-            float angle = Vector3.Angle(Vector3.up, slopeHit.normal);
+            float angle = Vector3.Angle(Vector3.up, _slopeHit.normal);
             return angle < playerParameters.maxSlopeAngle && angle != 0;
         }
 
@@ -209,7 +208,7 @@ public class PlayerController : MonoBehaviour
 
     private Vector3 GetSlopeMoveDirection()
     {
-        return Vector3.ProjectOnPlane(moveDirection, slopeHit.normal).normalized;
+        return Vector3.ProjectOnPlane(_moveDirection, _slopeHit.normal).normalized;
     }
 
 
