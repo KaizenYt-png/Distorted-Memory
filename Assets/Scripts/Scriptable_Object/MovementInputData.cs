@@ -6,16 +6,7 @@ namespace Scriptable_Object
     public class MovementInputData : ScriptableObject
     {
         static Vector2 _mInputVector;
-        
-        bool _mIsRunning;
-        bool _mIsCrouching;
 
-        bool _mCrouchClicked;
-        bool _mJumpClicked;
-
-        bool _mRunClicked;
-        bool _mRunReleased;
-        
         public Vector2 InputVector => _mInputVector;
         public bool HasInput => _mInputVector != Vector2.zero;
         public float HorizontalInput
@@ -30,54 +21,32 @@ namespace Scriptable_Object
             set => _mInputVector.y = value;
         }
 
-        public bool IsRunning
-        {
-            get => _mIsRunning;
-            set => _mIsRunning = value;
-        }
+        public bool IsRunning { get; set; }
 
-        public bool IsCrouching
-        {
-            get => _mIsCrouching;
-            set => _mIsCrouching = value;
-        }
+        public bool IsCrouching { get; set; }
 
-        public bool CrouchClicked
-        {
-            get => _mCrouchClicked;
-            set => _mCrouchClicked = value;
-        }
+        public bool CrouchClicked { get; set; }
 
-        public bool JumpClicked
-        {
-            get => _mJumpClicked;
-            set => _mJumpClicked = value;
-        }
+        public bool CrouchReleased { get; set; }
 
-        public bool RunClicked
-        {
-            get => _mRunClicked;
-            set => _mRunClicked = value;
-        }
+        public bool JumpClicked { get; set; }
 
-        public bool RunReleased
-        {
-            get => _mRunReleased;
-            set => _mRunReleased = value;
-        }
-        
-        
+        public bool RunClicked { get; set; }
+
+        public bool RunReleased { get; set; }
+
+
         public void ResetInput()
         {
             _mInputVector = Vector2.zero;
                 
-            _mIsRunning = false;
-            _mIsCrouching = false;
+            IsRunning = false;
+            IsCrouching = false;
 
-            _mCrouchClicked = false;
-            _mJumpClicked = false;
-            _mRunClicked = false;
-            _mRunReleased =false;
+            CrouchClicked = false;
+            JumpClicked = false;
+            RunClicked = false;
+            RunReleased =false;
         }
     }
 }
