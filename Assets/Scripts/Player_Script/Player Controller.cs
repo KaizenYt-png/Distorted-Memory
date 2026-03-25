@@ -1,10 +1,15 @@
+using Scriptable_Object;
 using UnityEngine;
 
 
 
 public class PlayerController : MonoBehaviour
 {
+    
     [SerializeField] private PlayerStat playerParameters;
+    [SerializeField] private MovementInputData movementInputData;
+    
+    
 
     //Jumping
     bool _readyToJump;
@@ -73,11 +78,9 @@ public class PlayerController : MonoBehaviour
 
     private void MyInput()
     {
-        _horizontalInput = Input.GetAxisRaw("Horizontal");
-        _verticalInput = Input.GetAxisRaw("Vertical");
 
         // when to jump
-        if (Input.GetKey(playerParameters.jumpKey) && _readyToJump && _grounded)
+        if (movementInputData.JumpClicked && _readyToJump && _grounded)
         {
             _readyToJump = false;
 
@@ -130,6 +133,9 @@ public class PlayerController : MonoBehaviour
 
     private void MovePlayer()
     {
+        _horizontalInput = movementInputData.HorizontalInput;
+        _verticalInput = movementInputData.VerticalInput;
+        
         // calculate movement direction
         _moveDirection = orientation.forward * _verticalInput + orientation.right * _horizontalInput;
 

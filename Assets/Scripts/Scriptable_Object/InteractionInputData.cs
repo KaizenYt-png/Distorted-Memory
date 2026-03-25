@@ -4,24 +4,24 @@ using UnityEngine;
 public class InteractionInputData : ScriptableObject
 {
     
-    private bool m_interactClick;
-    private bool m_interactRelease;
+    private bool _mInteractClick;
+    private bool _mInteractRelease;
 
     public bool InteractClick
     {
-        get => m_interactClick;
-        set => m_interactClick = value;
+        get => _mInteractClick;
+        set => _mInteractClick = value;
     }
 
     public bool InteractRelease
     {
-        get => m_interactRelease;
-        set => m_interactRelease = value;
+        get => _mInteractRelease;
+        set => _mInteractRelease = value;
     }
 
-    public void Reset()
+    public void ResetInput()
     {
-        m_interactClick = false;
-        m_interactRelease = false;
+        _mInteractClick = false;
+        _mInteractRelease = false;
     }
 }
