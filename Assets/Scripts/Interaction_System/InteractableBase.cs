@@ -18,7 +18,7 @@ namespace Interaction_System
 
         public void OnInteract()
         {
-            
+            Debug.Log("Interacted" + gameObject.name);
         }
     }
 }
