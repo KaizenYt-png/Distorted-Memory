@@ -56,7 +56,9 @@ namespace Player_Script
         private void Update()
         {
             // ground check
+           
             _grounded = Physics.Raycast(transform.position, Vector3.down, playerParameters.playerHeight * 0.5f + 0.2f, playerParameters.whatIsGround);
+            Debug.DrawRay(transform.position, Vector3.down * (playerParameters.playerHeight * 0.5f + 0.2f), Color.red);
 
             MyInput();
             SpeedControl();
