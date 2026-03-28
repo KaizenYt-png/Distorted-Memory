@@ -23,9 +23,6 @@ MonoBehaviour:
   crouchYScale: 0.5
   whatIsGround:
     serializedVersion: 2
-    m_Bits: 4294967295
-  jumpKey: 32
-  sprintKey: 304
-  crouchKey: 306
+    m_Bits: 64
   maxSlopeAngle: 40
   playerHeight: 2
