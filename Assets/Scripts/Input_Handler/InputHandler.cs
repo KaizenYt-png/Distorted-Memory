@@ -24,7 +24,7 @@ namespace Input_Handler
         void GetInteractionInputData()
         {
             interactionInputData.InteractClick = Input.GetKeyDown(KeyCode.E);
-            interactionInputData.InteractRelease = Input.GetKeyUp(KeyCode.E);
+            interactionInputData.InteractReleased = Input.GetKeyUp(KeyCode.E);
         }
 
         void GetMovementInputData()

@@ -7,12 +7,14 @@ namespace Scriptable_Object
     {
     
         public bool InteractClick { get; set; }
-        public bool InteractRelease { get; set; }
+        public bool InteractReleased { get; set; }
 
         public void ResetInput()
         {
             InteractClick = false;
-            InteractRelease = false;
+            InteractReleased = false;
         }
+
+        
     }
 }
