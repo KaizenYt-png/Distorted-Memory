@@ -7,6 +7,7 @@ namespace Interaction_System
         bool MultipleUse { get; }
         bool IsInteractable { get; }
     
+        string TooltipMessage { get; }
         void OnInteract();
     }
 }
