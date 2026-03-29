@@ -10,11 +10,19 @@ public class Door : MonoBehaviour
     [SerializeField] 
     private float speed = 1f;
 
-    [Header("Rotation Configs")] [SerializeField]
+    [Header("Rotation Configs")] 
+    [SerializeField]
     private float RotationAmount = 90f;
     [SerializeField]
     private float ForwardDirection = 0;
+
+    [Header("Sliding Configs")] 
+    [SerializeField]
+    private Vector3 SlidingDirection = Vector3.back;
+    [SerializeField]
+    private float SlidingAmount = 1.9f;
     
+    private Vector3 StartPosition;
     private Vector3 StartRotation;
     private Vector3 Forward;
     
@@ -25,6 +33,7 @@ public class Door : MonoBehaviour
         StartRotation = transform.rotation.eulerAngles;
         // Since "Foward" is pointing into the door frame
         Forward = transform.right;
+        StartPosition = transform.position;
     }
 
     public void OpenDoor(Vector3 playerPosition)
@@ -41,6 +50,10 @@ public class Door : MonoBehaviour
                 float dot = Vector3.Dot(Forward, (playerPosition - transform.position).normalized);
                 Debug.Log($"Dot: {dot.ToString("N3")}");
                 AnimationCoroutine = StartCoroutine(DoRotationOpen(dot));
+            }
+            else
+            {
+                AnimationCoroutine = StartCoroutine(DoSlidingOpen());
             }
         }
     }
@@ -69,6 +82,21 @@ public class Door : MonoBehaviour
         }
     }
 
+    public IEnumerator DoSlidingOpen()
+    {
+        Vector3 endPosition = StartPosition + SlidingDirection * SlidingAmount;
+        Vector3 startPosition = transform.position;
+        
+        
+        float time = 0;
+        IsOpen = true;
+        while (time < 1)
+        {
+            transform.position = Vector3.Slerp(startPosition, endPosition, time);
+            yield return null;
+            time += Time.deltaTime * speed;
+        }
+    }
     public void CloseDoor()
     {
         if (IsOpen)
@@ -79,6 +107,10 @@ public class Door : MonoBehaviour
         if (IsRotatingDoor)
         {
             AnimationCoroutine = StartCoroutine(DoRotationClose());
+        }
+        else
+        {
+            AnimationCoroutine = StartCoroutine(DoSlidingClose());
         }
     }
 
@@ -94,6 +126,22 @@ public class Door : MonoBehaviour
         while (time < 1)
         {
             transform.rotation = Quaternion.Slerp(startRotation, endRotation, time);
+            yield return null;
+            time += Time.deltaTime * speed;
+        }
+    }
+
+    private IEnumerator DoSlidingClose()
+    {
+        Vector3 endPosition = StartPosition;
+        Vector3 startPosition = transform.position;
+        
+        
+        float time = 0;
+        IsOpen = false;
+        while (time < 1)
+        {
+            transform.position = Vector3.Slerp(startPosition, endPosition, time);
             yield return null;
             time += Time.deltaTime * speed;
         }

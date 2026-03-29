@@ -18,7 +18,11 @@ namespace Interaction_System
         public bool MultipleUse => multipleUse;
         public bool IsInteractable => isInteractable;
         
-        public string TooltipMessage => tooltipMessage;
+        public string TooltipMessage
+        {
+            get => tooltipMessage;
+            set => tooltipMessage = value;
+        }
 
         public virtual void OnInteract()
         {

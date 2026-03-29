@@ -37,9 +37,17 @@ namespace Interactables
             }
 
             if (door.IsOpen)
+            {
+                TooltipMessage = "(E) Open";
                 door.CloseDoor();
+            }
             else
+            {
+                
+                TooltipMessage = "(E) Close";
                 door.OpenDoor(_playerTransform.position);
+            }
+                
         }
     }
 }
