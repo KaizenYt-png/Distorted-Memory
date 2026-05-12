@@ -1,4 +1,5 @@
 using Interaction_System;
+using Player_Script;
 using UnityEngine;
 
 namespace Interactables
@@ -6,14 +7,20 @@ namespace Interactables
     public class UseDoorInteractable : InteractableBase
     {
         [SerializeField] private Door door;
+        [SerializeField] private bool requiresKey;
+
         private Transform _playerTransform;
+        private PlayerInventory _playerInventory;
 
         private void Awake()
         {
             if (door == null)
                 door = GetComponentInParent<Door>();
+            
+            GameObject player = GameObject.FindGameObjectWithTag("Player");
 
-            _playerTransform = GameObject.FindGameObjectWithTag("Player")?.transform;
+            _playerTransform = player?.transform;
+            _playerInventory = player?.GetComponent<PlayerInventory>();
 
             Debug.Log($"Awake -> door: {(door != null)}, playerTransform: {(_playerTransform != null)}");
         }
@@ -35,6 +42,19 @@ namespace Interactables
                 Debug.LogWarning("Player transform is missing");
                 return;
             }
+            
+            if (requiresKey && _playerInventory == null)
+            {
+                Debug.LogWarning("PlayerInventory is missing on Player");
+                return;
+            }
+            
+            if (requiresKey && !door.IsOpen && !_playerInventory.HasKey)
+            {
+                TooltipMessage = "Need a key";
+                Debug.Log("You need a key to open this door");
+                return;
+            }
 
             if (door.IsOpen)
             {
@@ -43,11 +63,9 @@ namespace Interactables
             }
             else
             {
-                
                 TooltipMessage = "(E) Close";
                 door.OpenDoor(_playerTransform.position);
             }
-                
         }
     }
 }
