@@ -8,6 +8,7 @@ namespace Interactables
     {
         [SerializeField] private Door door;
         [SerializeField] private bool requiresKey;
+        [SerializeField] private string requiredKeyId;
 
         private Transform _playerTransform;
         private PlayerInventory _playerInventory;
@@ -48,11 +49,17 @@ namespace Interactables
                 Debug.LogWarning("PlayerInventory is missing on Player");
                 return;
             }
-            
-            if (requiresKey && !door.IsOpen && !_playerInventory.HasKey)
+
+            if (requiresKey && string.IsNullOrWhiteSpace(requiredKeyId))
             {
-                TooltipMessage = "Need a key";
-                Debug.Log("You need a key to open this door");
+                Debug.LogWarning("Required Key ID is missing on this door.");
+                return;
+            }
+            
+            if (requiresKey && !door.IsOpen && !_playerInventory.HasKey(requiredKeyId))
+            {
+                TooltipMessage = $"Need : {requiredKeyId}";
+                Debug.Log($"You need this key to open the door: {requiredKeyId}");
                 return;
             }
 

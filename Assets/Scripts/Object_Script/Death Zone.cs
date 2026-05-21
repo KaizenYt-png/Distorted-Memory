@@ -1,13 +1,16 @@
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Object_Script
 {
     public class DeathZone : MonoBehaviour
     {
         [SerializeField] private Transform respawnPoint;
+        
 
         private void OnTriggerEnter(Collider other)
         {
+            
             Transform player = other.transform.root;
 
             if (!player.CompareTag("Player"))
@@ -34,8 +37,9 @@ namespace Object_Script
                 rigidbody.linearVelocity = Vector3.zero;
                 rigidbody.angularVelocity = Vector3.zero;
             }
-
+            
             player.position = respawnPoint.position;
+            
 
             if (characterController != null)
             {
