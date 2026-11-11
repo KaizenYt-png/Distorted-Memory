@@ -32,17 +32,18 @@ namespace Input_Handler
             movementInputData.HorizontalInput = Input.GetAxisRaw("Horizontal");
             movementInputData.VerticalInput = Input.GetAxisRaw("Vertical");
 
-            movementInputData.RunClicked = Input.GetKeyDown(KeyCode.LeftShift);
-            movementInputData.RunReleased = Input.GetKeyUp(KeyCode.LeftShift);
+            movementInputData.RunClicked = Input.GetKey(KeyCode.LeftShift);
+            
         
             movementInputData.CrouchClicked = Input.GetKeyDown(KeyCode.LeftControl);
             movementInputData.CrouchReleased = Input.GetKeyUp(KeyCode.LeftControl);
 
             if(movementInputData.RunClicked)
                 movementInputData.IsRunning = true;
-
-            if(movementInputData.RunReleased)
-                movementInputData.IsRunning = false;
+            else
+            {
+                 movementInputData.IsRunning = false;
+            }
         
             if(movementInputData.CrouchClicked)
                 movementInputData.IsCrouching= true;
